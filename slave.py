@@ -1,6 +1,5 @@
 import socket 
 import sys
-import os
 
 #host = '192.168.0.107'
 host = '10.43.62.206'
@@ -11,9 +10,18 @@ myself = 0
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
 s.connect((host,port)) 
 print("Connected!")
-file = open("db.txt", "r")
-my_data = file.readline() #d→b→c
-my_data = my_data.split('→')
+
+try:
+	file = open("db.txt", "r")
+	my_data = file.readline() #d→b→c
+	if my_data == '':
+		my_data = ["","",""]
+	else:
+		my_data = my_data.split('→')
+except Exception:
+	my_data = ["","",""]
+	
+	print("no such file")
 
 data = s.recv(1024)
 myself = data.decode()
