@@ -1,6 +1,5 @@
 import socket 
 from threading import Thread
-#from numpy import array_split
 
 class Nodo():
 	def __init__(self, sock:socket, chunck):
@@ -21,7 +20,10 @@ class Nodo():
 
 	def read_data(self):
 		msg = "$<smyov>$" #send me your original value
-		self.sock.send(msg.encode())
+		try:
+			self.sock.send(msg.encode())
+		except:
+			return ''
 		data = self.sock.recv(1024)
 		return data.decode()
 
@@ -36,7 +38,7 @@ class Nodo():
 		self.sock.send(msg.encode())
 		data = self.sock.recv(1024)
 		return data.decode()
-	
+
 	def close(self):
 		return self.sock.close()
 
@@ -75,12 +77,6 @@ del _
 
 while(True):
 	option = input(">")
-	if node1.status() == '':
-		node1.close()
-	if node2.status() == '':
-		node2.close()
-	if node3.status() == '':
-		node3.close()
 	if option == 'set msg':
 		splited_message = input(">>>")
 		splited_message = fragmenter(splited_message)
@@ -103,22 +99,27 @@ while(True):
 		try:
 			info1 = node1.read_data()
 			if info1 == '':
-				print("node1: No hay datos")
+				raise Exception
 		except Exception:
 			error = 1
+			node1.close()
 			print("Error while reading node 1")
+
 		try:
 			info2 = node2.read_data()
 			if info2 == '':
-				print("node2: No hay datos")
+				raise Exception
 		except Exception:
+			node2.close()
 			error = 2
 			print("Error while reading node 2")
+
 		try:
 			info3 = node3.read_data()
 			if info3 == '':
-				print("node3: No hay datos")
+				raise Exception
 		except Exception:
+			node3.close()
 			error = 3
 			print("Error while reading node 3")
 		
