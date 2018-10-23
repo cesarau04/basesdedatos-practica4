@@ -1,15 +1,20 @@
 import socket 
 import sys
+import os
 
 #host = '192.168.0.107'
-host = '10.43.54.73'
+host = '10.43.62.206'
 port = 4444
 myself = 0
-my_data = ["","",""]
+#my_data = ["","",""]
 
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
 s.connect((host,port)) 
 print("Connected!")
+file = open("db.txt", "r")
+my_data = file.readline() #d→b→c
+my_data = my_data.split('→')
+
 data = s.recv(1024)
 myself = data.decode()
 myself = int(myself)
@@ -32,6 +37,10 @@ while True:
 		msg = str(my_data)
 		s.send(msg.encode())
 	elif data == "":
+		file = open("db.txt", "w")	
+		ph = str(my_data[0]) + '→' + str(my_data[1]) +  '→' + str(my_data[2])
+		file.write(ph)
+		file.close()
 		print("\n\nMy final variables:")
 		print(my_data)
 		s.close()
